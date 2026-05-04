@@ -6,22 +6,17 @@ import { recupererTousLesLivresBibliotheque as recupererTousLesLivresModel } fro
  * @param {*} res 
  * @returns 
  */
-export const _recupererTousLesLivresBibliotheque = async (req, res) => {
+export const _recupererTousLesLivresBibliotheque = async (req, res, next) => {
     try {
-        const id = Number(req.params.id)
-
-        if (!Number.isInteger(id) || id <= 0) {
-            return res.status(400).json({
-                error: "L'identifiant de la bibliothèque doit être un entier positif."
-            })
-        }
+        // L'ID de la bibliothèque vient de l'authentification par clé API
+        const bibliothequeId = req.bibliotheque.id
 
         const disponible = req.query.disponible === '1'
 
-        const livres = await recupererTousLesLivresModel(id, disponible)
+        const livres = await recupererTousLesLivresModel(bibliothequeId, disponible)
 
         return res.status(200).json({
-            identifiant: id,
+            bibliotheque: req.bibliotheque.nom,
             disponible,
             total: livres.length,
             livres
@@ -29,6 +24,7 @@ export const _recupererTousLesLivresBibliotheque = async (req, res) => {
 
     } catch (erreur) {
         console.error('Erreur contrôleur livre :', erreur.message)
-        return res.status(500).json({ error: 'Impossible de récupérer les livres pour cette bibliothèque.' })
+        const error = new Error('Impossible de récupérer les livres pour cette bibliothèque.')
+        next(error)
     }
 }

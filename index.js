@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import morgan from 'morgan';
 import router from './src/routes/livre.route.js';
+import routerUtilisateur from './src/routes/utilisateur.route.js';
+import { verifierCleAPI } from './src/middleware/authentification.js';
 
 dotenv.config();
 
@@ -15,6 +17,13 @@ app.use(express.json());
 // Morgan : journalisation des requêtes vers la console
 app.use(morgan('dev'));
 
+// Routes publiques (sans authentification par clé API)
+app.use('/api/utilisateurs', routerUtilisateur);
+
+// Middleware d'authentification par clé API
+app.use('/api/bibliotheque', verifierCleAPI);
+
+// Routes protégées par clé API
 app.use('/api/bibliotheque', router);
 
 // Ecriture dans le fichier formater par Gemini

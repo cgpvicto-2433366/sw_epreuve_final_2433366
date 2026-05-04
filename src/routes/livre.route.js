@@ -10,6 +10,8 @@ router.get('/test-500', (req, res, next) => {
     next(error); 
 });
 
-router.get('/liste/:id', _recupererTousLesLivresBibliotheque)
+// Route pour récupérer les livres de la bibliothèque authentifiée
+// GET /api/bibliotheque/liste?disponible=1
+router.get('/liste', _recupererTousLesLivresBibliotheque)
 
 export default router
