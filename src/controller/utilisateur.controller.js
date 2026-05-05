@@ -1,4 +1,4 @@
-import { ajouterUtilisateur, recupererCleAPI, genererNouvelleClé } from '../models/utilisateur.model.js'
+import { ajouterUtilisateur, recupererCleAPI} from '../models/utilisateur.model.js'
 
 /**
  * Ajouter un nouvel utilisateur (bibliothèque)
@@ -8,19 +8,19 @@ import { ajouterUtilisateur, recupererCleAPI, genererNouvelleClé } from '../mod
  */
 export const _ajouterUtilisateur = async (req, res, next) => {
     try {
-        const { nomBibliotheque, email, motDePasse } = req.body
+        const { nom, email, mdp } = req.body
 
-        if (!nomBibliotheque || !email || !motDePasse) {
+        if (!nom || !email || !mdp) {
             return res.status(400).json({
-                error: 'Les champs nomBibliotheque, email et motDePasse sont obligatoires.'
+                erreur: 'Les champs nom de la bibliothèque, email et mot de passe sont obligatoires.'
             })
         }
 
-        const resultat = await ajouterUtilisateur(nomBibliotheque, email, motDePasse)
+        const resultat = await ajouterUtilisateur(nom, email, mdp)
 
         return res.status(201).json({
             message: 'Utilisateur créé avec succès.',
-            bibliotheque: resultat
+            cle_api: resultat.cle_api
         })
     } catch (erreur) {
         console.error('Erreur contrôleur utilisateur :', erreur.message)
@@ -30,7 +30,7 @@ export const _ajouterUtilisateur = async (req, res, next) => {
 }
 
 /**
- * Récupérer la clé API d'un utilisateur
+ * Récupérer ou generer la clé API d'un utilisateur
  * @param {*} req 
  * @param {*} res 
  * @returns 
@@ -38,14 +38,22 @@ export const _ajouterUtilisateur = async (req, res, next) => {
 export const _recupererCleAPI = async (req, res, next) => {
     try {
         const { email, motDePasse } = req.body
+        const nouveau = req.query.nouveau === '1'
 
         if (!email || !motDePasse) {
             return res.status(400).json({
-                error: 'Les champs email et motDePasse sont obligatoires.'
+                erreur: 'Les champs email et mot de passe sont obligatoires.'
             })
         }
 
-        const resultat = await recupererCleAPI(email, motDePasse)
+        const resultat = await recupererCleAPI(email, motDePasse, nouveau)
+
+        if(nouveau){
+            return res.status(201).json({
+                message: 'Clé API regénéré.',
+                bibliotheque: resultat
+            })
+        }
 
         return res.status(200).json({
             message: 'Clé API récupérée avec succès.',
@@ -58,31 +66,3 @@ export const _recupererCleAPI = async (req, res, next) => {
     }
 }
 
-/**
- * Générer une nouvelle clé API
- * @param {*} req 
- * @param {*} res 
- * @returns 
- */
-export const _genererNouvelleClé = async (req, res, next) => {
-    try {
-        const { email, motDePasse } = req.body
-
-        if (!email || !motDePasse) {
-            return res.status(400).json({
-                error: 'Les champs email et motDePasse sont obligatoires.'
-            })
-        }
-
-        const resultat = await genererNouvelleClé(email, motDePasse)
-
-        return res.status(200).json({
-            message: 'Nouvelle clé API générée avec succès.',
-            bibliotheque: resultat
-        })
-    } catch (erreur) {
-        console.error('Erreur contrôleur utilisateur :', erreur.message)
-        const error = new Error(erreur.message)
-        next(error)
-    }
-}
