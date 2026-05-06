@@ -47,8 +47,8 @@ export const recupererDetailDeLivre =  async(livreId, bibliothequeId) =>{
     const paramsLivre = [livreId, bibliothequeId]
 
     const sqlPrets = `
-        SELECT id, emprunteur, date_debut, date_retour
-            CASE WHEN date_retour IS NULL THEN 'en cours' ELSE 'terminé' END AS statut
+        SELECT id, emprunteur, date_debut, date_retour,
+            CASE WHEN statut IS false THEN 'en cours' ELSE 'terminé' END AS statut
         FROM prets
         WHERE livre_id = $1
         ORDER BY date_debut
@@ -182,4 +182,26 @@ export const supprimerLivre = async(id, bibliothequeId) =>{
         throw erreur;
     }
 }
+
+/**
+ * Vérifier si un livre est disponible
+ * @param {*} livreId
+ * @returns 
+ */
+export const verifierDisponibiliteLivre = async (livreId) => {
+    const sqlQuery = `
+        SELECT id, disponible
+        FROM livres
+        WHERE id = $1
+    `;
+    const params = [livreId];
+
+    try {
+        const resultat = await pool.query(sqlQuery, params);
+        return resultat.rows[0] || null;
+    } catch (erreur) {
+        console.error(`Erreur BD : ${erreur.message}`);
+        throw erreur;
+    }
+};
 
