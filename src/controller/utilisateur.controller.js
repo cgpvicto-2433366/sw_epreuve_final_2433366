@@ -1,5 +1,5 @@
 import { ajouterUtilisateur, recupererCleAPI, regenererCleAPI} from '../models/utilisateur.model.js'
-
+import bcrypt from 'bcrypt'
 
 /**
  * Ajouter un nouvel utilisateur (bibliothèque)

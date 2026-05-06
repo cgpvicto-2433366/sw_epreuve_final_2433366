@@ -54,7 +54,7 @@ export const _recupererDetailDeLivre =  async(req, res, next) =>{
 
         const resultat = await recupererDetailDeLivre(id, bibliothequeId)
 
-        if (!resultat.livre.length){
+        if (!resultat.livre){
             return res.status(404).json({
                 message: "Désolé, mais nous n'avons trouvé aucune information sur ce livre"
             })
@@ -83,7 +83,7 @@ export const _ajouterUnLivre = async(req, res, next) =>{
 
     try {
         const { titre, auteur, isbn, description } = req.body
-        const disponible = req.body.disponible === '1'
+        const disponible =  req.body.disponible === '1'
         const bibliothequeId = req.bibliotheque.id
 
         if (!titre || !auteur || !isbn ) {
@@ -122,7 +122,7 @@ export const _modifierUnLivre = async(req, res, next) =>{
     try {
         const { titre, auteur, isbn} = req.body
         const bibliothequeId = req.bibliotheque.id
-        const description = req.body.description.length > 0 ? req.body.description : null;
+        const description = req.body.description?.length > 0 ? req.body.description : null;
         const id = req.params.id
         if(!id || isNaN(Number(id)) || Number(id) <= 0){
             res.status(400).json({

@@ -50,7 +50,7 @@ CREATE TABLE prets(
 	emprunteur VARCHAR(100) NOT NULL,
 	statut BOOLEAN DEFAULT false, -- false si le pret est en cours et true dans si il est terminé
 	date_debut DATE DEFAULT CURRENT_DATE, -- champ ajouté
-	date_retour_prevue DATE NOT NULL
+	date_retour_prevue DATE NOT NULL,
 	date_retour DATE
 );
 
@@ -82,7 +82,7 @@ INSERT INTO livres (bibliotheque_id, titre, auteur, isbn, disponible, descriptio
 
 -- prêts
 -- Données généré par claude IA
-INSERT INTO prets (livre_id, emprunteur, date_debut, date_retour_prevu, date_retour) VALUES
-(2, 'Alice Tremblay', '2026-04-01', '2026-04-01', '2026-04-15'),
-(5, 'Mohamed Diallo', '2026-04-10', '2026-04-01', '2026-04-24');
+INSERT INTO prets (livre_id, emprunteur, date_debut, date_retour_prevue) VALUES
+(2, 'Alice Tremblay', '2026-04-01', '2026-04-15'),
+(5, 'Mohamed Diallo', '2026-04-10', '2026-04-24');
 

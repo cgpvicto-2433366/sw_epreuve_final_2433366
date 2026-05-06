@@ -1,12 +1,12 @@
-import { ajouterUnPret } from "../models/pret.model.js";
+import { ajouterUnPret, modifierPret, modifierStatutPret, supprimerPret } from "../models/pret.model.js";
 import { verifierDisponibiliteLivre, modifierStatut } from "../models/livre.model.js";
 
 /**
  * Ajouter un prêt
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
- * @returns 
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ * @returns
  */
 export const _ajouterUnPret = async (req, res, next) => {
     try {
@@ -19,7 +19,8 @@ export const _ajouterUnPret = async (req, res, next) => {
             });
         }
 
-        const livre = await verifierDisponibiliteLivre(livreId);
+        // Vérifie que le livre existe et appartient à cette bibliothèque
+        const livre = await verifierDisponibiliteLivre(livreId, bibliothequeId);
         if (!livre || !livre.disponible) {
             return res.status(400).json({
                 erreur: 'Le livre n\'est pas disponible pour le prêt.'
@@ -45,16 +46,56 @@ export const _ajouterUnPret = async (req, res, next) => {
 
 
 /**
+ * Modifier les informations d'un prêt
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ * @returns
+ */
+export const _modifierUnPret = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const { emprunteur, dateRetourPrevue } = req.body;
+        const bibliothequeId = req.bibliotheque.id;
+
+        if (!id || isNaN(Number(id)) || Number(id) <= 0) {
+            return res.status(400).json({
+                message: "L'identifiant du prêt est obligatoire et doit être supérieur à 0."
+            });
+        }
+
+        if (!emprunteur || !dateRetourPrevue) {
+            return res.status(400).json({
+                erreur: "Les champs emprunteur et date de retour prévu sont obligatoires."
+            });
+        }
+
+        const resultat = await modifierPret(id, bibliothequeId, emprunteur, dateRetourPrevue);
+
+        return res.status(200).json({
+            message: 'Prêt modifié avec succès.',
+            pret: resultat
+        });
+
+    } catch (erreur) {
+        console.error('Erreur lors de la modification d\'un prêt :', erreur.message);
+        const error = new Error('Erreur lors de la modification d\'un prêt.');
+        next(error);
+    }
+};
+
+
+/**
  * Modifier le statut d'un prêt dans le cas d'un livre retourner
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
- * @returns 
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ * @returns
  */
 export const _modifierStatutPret = async (req, res, next) => {
     try {
         const id = req.params.id;
-        const terminer = req.body.terminer === '1'
+        const terminer = req.body.terminer === '1';
         const bibliothequeId = req.bibliotheque.id
 
         if (!id || isNaN(Number(id)) || Number(id) <= 0) {
@@ -63,9 +104,9 @@ export const _modifierStatutPret = async (req, res, next) => {
             });
         }
 
-        const resultat = await modifierStatutPret(id, terminer);
+        const resultat = await modifierStatutPret(id, bibliothequeId, terminer);
 
-        await modifierStatut(pret.livre_id, bibliothequeId, terminer);
+        await modifierStatut(resultat.livre_id, bibliothequeId, terminer);
 
         return res.status(200).json({
             message: 'Statut du prêt modifié avec succès.',
@@ -81,10 +122,15 @@ export const _modifierStatutPret = async (req, res, next) => {
 
 /**
  * Supprimer un prêt
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ * @returns
  */
 export const _supprimerUnPret = async (req, res, next) => {
     try {
         const id = req.params.id;
+        const bibliothequeId = req.bibliotheque.id;
 
         if (!id || isNaN(Number(id)) || Number(id) <= 0) {
             return res.status(400).json({
@@ -92,7 +138,10 @@ export const _supprimerUnPret = async (req, res, next) => {
             });
         }
 
-        const resultat = await supprimerPret(id);
+        const resultat = await supprimerPret(id, bibliothequeId);
+
+        // Remettre le livre disponible après suppression du prêt
+        await modifierStatut(resultat.livre_id, bibliothequeId, true);
 
         return res.status(200).json({
             message: 'Prêt supprimé avec succès.',

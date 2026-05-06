@@ -17,7 +17,7 @@ export const recupererTousLesLivresBibliotheque =  async(bibliothequeId, disponi
     if (disponible) {
         sqlQuery = `SELECT titre, auteur, isbn FROM livres WHERE bibliotheque_id = $1 ORDER BY titre `;
     } else {
-        sqlQuery = `SELECT titr, auteur, isbn FROM livres WHERE bibliotheque_id = $1 AND disponible = true ORDER BY titre `;
+        sqlQuery = `SELECT titre, auteur, isbn FROM livres WHERE bibliotheque_id = $1 AND disponible = true ORDER BY titre `;
     }
     
     try{
@@ -188,13 +188,13 @@ export const supprimerLivre = async(id, bibliothequeId) =>{
  * @param {*} livreId
  * @returns 
  */
-export const verifierDisponibiliteLivre = async (livreId) => {
+export const verifierDisponibiliteLivre = async (livreId, bibliothequeId) => {
     const sqlQuery = `
         SELECT id, disponible
         FROM livres
-        WHERE id = $1
+        WHERE id = $1 AND bibliotheque_id = $2
     `;
-    const params = [livreId];
+    const params = [livreId, bibliothequeId];
 
     try {
         const resultat = await pool.query(sqlQuery, params);
