@@ -33,6 +33,7 @@ CREATE TABLE livres(
 	auteur VARCHAR(100) NOT NULL,
 	isbn VARCHAR(20) NOT NULL UNIQUE,
 	date_ajout DATE default CURRENT_DATE,
+	date_modification  DATE default CURRENT_DATE,
 	disponible BOOLEAN default true,
 	description TEXT -- champ ajouté
 );

@@ -1,16 +1,13 @@
 import express from 'express'
-import {_recupererTousLesLivresBibliotheque, _recupererDetailDeLivre} from '../controller/livre.controller.js'
+import {_recupererTousLesLivresBibliotheque, _recupererDetailDeLivre, _ajouterUnLivre, _modifierStatut, _modifierUnLivre, _supprimerUnLivre} from '../controller/livre.controller.js'
 
 const router = express.Router()
 
-// Route de test pour générer une erreur 500 afin de valider morgan
-router.get('/test-500', (req, res, next) => {
-    const error = new Error('Accès refusé ou données invalides'); 
-    error.status = 500;
-    next(error); 
-});
-
 router.get('/liste', _recupererTousLesLivresBibliotheque)
-router.get('/livre/:id', _recupererDetailDeLivre)
+router.get('/:id', _recupererDetailDeLivre)
+router.post('/', _ajouterUnLivre)
+router.put('/:id', _modifierUnLivre)
+router.patch('/:id', _modifierStatut)
+router.delete('/:id', _supprimerUnLivre)
 
 export default router

@@ -35,12 +35,12 @@ export const _ajouterUtilisateur = async (req, res, next) => {
             cle_api: resultat.cle_api
         })
     } catch (erreur) {
-        console.error('Erreur ajouter un utilisateur :', erreur.message)
+        console.error('Erreur lors de l\'ajout d\'un utilisateur :', erreur.message)
         let error = new Error()
         if(erreur.code === VALEUR_NON_UNIQUE){
            error = Error("Un compte existe déjà avec cet email.")
         }else{
-            error = new Error('Erreur lors de l\'ajouter d\'un utilisateur')
+            error = new Error('Erreur lors de l\'ajout d\'un utilisateur')
         } 
         next(error)
     }
@@ -83,7 +83,7 @@ export const _recupererCleAPI = async (req, res, next) => {
 
         if(nouveau){
             const resultat = await regenererCleAPI(email)
-            return res.status(201).json({
+            return res.status(200).json({
                 message: 'Clé API régénérée avec succès.',
                 bibliotheque: resultat
             });
