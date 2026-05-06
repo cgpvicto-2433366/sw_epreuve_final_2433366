@@ -3,7 +3,7 @@
     "info": {
         "title": "API Bibliothèque",
         "summary": "Service web de gestion de prêts pour bibliothèques",
-        "description": "Permet la gestion des livres et des prêts pour chaque bibliothèque. Chaque bibliothèque accède uniquement à ses propres données via une clé API passée dans le header `authorization`. Les routes /inscription et /connexion sont publiques.",
+        "description": "Permet la gestion des livres et des prêts pour chaque bibliothèque..",
         "version": "1.0.0"
     },
     "servers": [
