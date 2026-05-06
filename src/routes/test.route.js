@@ -1,5 +1,4 @@
 import express from 'express'
-import {_recupererTousLesLivresBibliotheque, _recupererDetailDeLivre} from '../controller/livre.controller.js'
 
 const router = express.Router()
 
@@ -9,8 +8,5 @@ router.get('/test-500', (req, res, next) => {
     error.status = 500;
     next(error); 
 });
-
-router.get('/liste', _recupererTousLesLivresBibliotheque)
-router.get('/livre/:id', _recupererDetailDeLivre)
 
 export default router

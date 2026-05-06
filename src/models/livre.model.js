@@ -28,3 +28,38 @@ export const recupererTousLesLivresBibliotheque =  async(bibliothequeId, disponi
         throw erreur;
     }
 }
+
+
+/**
+ * Récuperer les détails sur un livre (Son titre, son auteur, son ISBN, 
+ * son statut, sa description et la liste de ses prêts ainsi qu’un
+ *  indicateur détaillant si le prêt est en cours ou terminé.)
+ * @param {*} livreId, identifiant du livre dans la base de donnée
+ */
+export const recupererDetailDeLivre =  async(livreId) =>{
+
+    const sqlLivre = `
+        SELECT id, titre, auteur, isbn, disponible, description 
+        FROM livres WHERE id = $1
+    `
+    const sqlPrets = `
+        SELECT id, emprunteur, date_debut, date_retour
+            CASE WHEN date_retour IS NULL THEN 'en cours' ELSE 'terminé' END AS statut
+        FROM prets
+        WHERE livre_id = $1
+    `
+
+    const params = [livreId];
+    
+    try{
+        const livreResult = await pool.query(sqlLivre, [livreId])
+        const pretsResult = await pool.query(sqlPrets, [livreId])
+        return {
+            livre: livreResult.rows[0],
+            prets: pretsResult.rows
+        }
+    } catch(erreur){
+        console.error(`Erreur BD : ${erreur.message}`);
+        throw erreur;
+    }
+}

@@ -1,6 +1,6 @@
-drop table if exists prets;
-drop table if exists livres;
-drop table if exists bibliotheques;
+DROP TABLE IF EXISTS prets;
+DROP TABLE IF EXISTS livres;
+DROP TABLE IF EXISTS bibliotheques;
 
 
 /**
@@ -10,14 +10,14 @@ drop table if exists bibliotheques;
  * @source: https://www.geeksforgeeks.org/postgresql/postgresql-create-auto-increment-column-using-serial/
  * pour le serial qui fait le job du auto_increment de mysql
  * */
-create table bibliotheques(
-	id SERIAL primary key ,
-	nom VARCHAR(100) not null,
-	courriel VARCHAR(255) not null,
+CREATE TABLE bibliotheques(
+	id SERIAL PRIMARY KEY ,
+	nom VARCHAR(100) NOT NULL,
+	courriel VARCHAR(255) NOT NULL UNIQUE,
 	-- 36 au lieu de 30, car une clé UUID() est de 36 caractères
 	-- source: https://blogger.allthingsdev.co/fr/blog/securing-api-endpoints-with-uuids-and-best-practices
-	cle_api VARCHAR(36) not null,
-	password VARCHAR(255) not null
+	cle_api VARCHAR(36) NOT NULL UNIQUE,
+	password VARCHAR(255) NOT NULL
 );
 
 
@@ -25,13 +25,13 @@ create table bibliotheques(
  *  Table livre
  *  elle decrit comment un livre est definis dans  notre système.
  * */
-create table livres(
-	id SERIAL primary key ,
+CREATE TABLE livres(
+	id SERIAL PRIMARY KEY ,
 	-- source: https://www.postgresql.org/docs/current/tutorial-fk.html
-	bibliotheque_id INT references bibliotheques(id),
-	titre VARCHAR(100) not null,
-	auteur VARCHAR(100) not null,
-	isbn VARCHAR(20) not null,
+	bibliotheque_id INT REFERENCES bibliotheques(id),
+	titre VARCHAR(100) NOT NULL,
+	auteur VARCHAR(100) NOT NULL,
+	isbn VARCHAR(20) NOT NULL UNIQUE,
 	date_ajout DATE default CURRENT_DATE,
 	disponible BOOLEAN default true,
 	description TEXT -- champ ajouté
@@ -42,12 +42,12 @@ create table livres(
  *  Table prets
  *  elle decrit comment un prêt est definis dans  notre système.
  * */
-create table prets(
-	id SERIAL primary key ,
+CREATE TABLE prets(
+	id SERIAL PRIMARY KEY ,
 	-- source: https://www.postgresql.org/docs/current/tutorial-fk.html
-	livre_id INT references livres(id),
-	emprunteur VARCHAR(100) not null,
-	date_debut DATE, -- champ ajouté
+	livre_id INT REFERENCES livres(id),
+	emprunteur VARCHAR(100) NOT NULL,
+	date_debut DATE DEFAULT CURRENT_DATE, -- champ ajouté
 	date_retour DATE
 );
 
@@ -82,3 +82,4 @@ INSERT INTO livres (bibliotheque_id, titre, auteur, isbn, disponible, descriptio
 INSERT INTO prets (livre_id, emprunteur, date_debut, date_retour) VALUES
 (2, 'Alice Tremblay', '2026-04-01', '2026-04-15'),
 (5, 'Mohamed Diallo', '2026-04-10', '2026-04-24');
+

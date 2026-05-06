@@ -4,6 +4,7 @@ import fs from 'fs';
 import morgan from 'morgan';
 import routerLivre from './src/routes/livre.route.js';
 import routerUtilisateur from './src/routes/utilisateur.route.js';
+import routerTest from './src/routes/test.route.js'
 import { Authentification } from './src/middleware/authentification.middleware.js';
 
 dotenv.config();
@@ -20,8 +21,11 @@ app.use(morgan('dev'));
 // Routes publiques (sans authentification par clé API)
 app.use('/api/bibliotheque/utilisateurs', routerUtilisateur);
 
+// Routes test 
+app.use('/api/bibliotheque', routerTest);
+
 // Middleware d'authentification par clé API et route protégé
-app.use('/api/bibliotheque', Authentification, routerLivre);
+app.use('/api/bibliotheque/livres', Authentification, routerLivre);
 
 // Ecriture dans le fichier formater par Gemini
 app.use((err, req, res, next) => {
