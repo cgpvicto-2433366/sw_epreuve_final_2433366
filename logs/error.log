@@ -25,3 +25,5 @@
 [2026-05-07T14:43:29.202Z] QUI: Bibliothèque de Victoriaville | QUOI: PUT /api/bibliotheque/prets/90 | CIBLE: Indéfinis | ERREUR: Erreur lors de la modification d'un prêt.
 [2026-05-07T14:45:56.210Z] QUI: Bibliothèque de Victoriaville | QUOI: PUT /api/bibliotheque/prets/2 | CIBLE: Indéfinis | ERREUR: Erreur lors de la modification d'un prêt.
 [2026-05-07T14:51:58.698Z] QUI: Non authentifié | QUOI: GET /api/bibliotheque/tests/test-500 | CIBLE: Indéfinis | ERREUR: Accès refusé ou données invalides
+[2026-05-07T14:57:51.663Z] QUI: Non authentifié | QUOI: GET /api/bibliotheque/tests/test-500 | CIBLE: Indéfinis | ERREUR: Accès refusé ou données invalides
+[2026-05-07T14:58:51.540Z] QUI: Bibliothèque de Victoriaville | QUOI: PUT /api/bibliotheque/prets/4 | CIBLE: Indéfinis | ERREUR: Erreur lors de la modification d'un prêt.
