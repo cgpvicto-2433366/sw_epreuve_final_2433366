@@ -1,0 +1,738 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "API Bibliothèque",
+        "summary": "Service web de gestion de prêts pour bibliothèques",
+        "description": "Permet la gestion des livres et des prêts pour chaque bibliothèque..",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000",
+            "description": "Serveur de développement"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "ApiKeyAuth": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "authorization",
+                "description": "Clé API de la bibliothèque (UUID)"
+            }
+        }
+    },
+    "paths": {
+        "/api/bibliotheque/utilisateurs/inscription": {
+            "post": {
+                "summary": "Créer un compte bibliothèque",
+                "description": "Crée un nouveau compte pour une bibliothèque et retourne une clé API. Route publique.",
+                "tags": ["Utilisateurs"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["nom", "email", "mdp"],
+                                "properties": {
+                                    "nom": {
+                                        "type": "string",
+                                        "description": "Nom de la bibliothèque",
+                                        "example": "Bibliothèque de Laval"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "laval@bibliotheque.qc.ca"
+                                    },
+                                    "mdp": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "MotDePasse123!"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Compte créé avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": { "type": "string", "example": "Utilisateur créé avec succès." },
+                                        "cle_api": { "type": "string", "example": "550e8400-e29b-41d4-a716-446655440000" }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Champs obligatoires manquants ou format email invalide",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": { "type": "string", "example": "Les champs nom de la bibliothèque, email et mot de passe sont obligatoires." }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erreur serveur (ex. email déjà utilisé)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": { "type": "string", "example": "Un compte existe déjà avec cet email." }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/bibliotheque/utilisateurs/connexion": {
+            "post": {
+                "summary": "Récupérer ou régénérer la clé API",
+                "description": "Retourne la clé API de la bibliothèque après vérification du mot de passe. Le paramètre optionnel `nouveau=1` génère une nouvelle clé. Route publique.",
+                "tags": ["Utilisateurs"],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "nouveau",
+                        "description": "Passer `1` pour générer une nouvelle clé API",
+                        "required": false,
+                        "schema": { "type": "string", "enum": ["1"] }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["email", "mdp"],
+                                "properties": {
+                                    "email": { "type": "string", "format": "email", "example": "laval@bibliotheque.qc.ca" },
+                                    "mdp": { "type": "string", "format": "password", "example": "MotDePasse123!" }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Clé API retournée ou régénérée avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": { "type": "string", "example": "Clé API récupérée avec succès." },
+                                        "bibliotheque": {
+                                            "type": "object",
+                                            "properties": {
+                                                "nom": { "type": "string" },
+                                                "courriel": { "type": "string" },
+                                                "cle_api": { "type": "string" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Champs email ou mot de passe manquants",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": { "type": "string", "example": "Les champs email et mot de passe sont obligatoires." }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Email ou mot de passe invalide",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": { "type": "string", "example": "Email ou mot de passe invalide" }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erreur serveur"
+                    }
+                }
+            }
+        },
+        "/api/bibliotheque/livres/liste": {
+            "get": {
+                "summary": "Afficher la liste des livres",
+                "description": "Retourne les livres de la bibliothèque authentifiée. Par défaut, seuls les livres disponibles sont affichés. Passer `disponible=1` pour afficher tous les livres.",
+                "tags": ["Livres"],
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "disponible",
+                        "description": "Passer `1` pour afficher tous les livres (disponibles et empruntés)",
+                        "required": false,
+                        "schema": { "type": "string", "enum": ["1"] }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des livres récupérée avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "bibliotheque": { "type": "string", "example": "Bibliothèque de Victoriaville" },
+                                        "disponible": { "type": "boolean" },
+                                        "total": { "type": "integer", "example": 3 },
+                                        "livres": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "titre": { "type": "string" },
+                                                    "auteur": { "type": "string" },
+                                                    "isbn": { "type": "string" }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Clé API manquante ou invalide",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": { "type": "string", "example": "Clé API invalide ou non autorisée." }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": { "description": "Erreur serveur" }
+                }
+            }
+        },
+        "/api/bibliotheque/livres/{id}": {
+            "get": {
+                "summary": "Afficher le détail d'un livre",
+                "description": "Retourne les informations complètes d'un livre de la bibliothèque ainsi que la liste de ses prêts avec un indicateur de statut (en cours / terminé).",
+                "tags": ["Livres"],
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Identifiant du livre",
+                        "required": true,
+                        "schema": { "type": "integer", "example": 1 }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détail du livre récupéré avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "detail": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": { "type": "integer" },
+                                                "titre": { "type": "string" },
+                                                "auteur": { "type": "string" },
+                                                "isbn": { "type": "string" },
+                                                "disponible": { "type": "boolean" },
+                                                "description": { "type": "string" },
+                                                "date_ajout": { "type": "string", "format": "date" },
+                                                "date_modification": { "type": "string", "format": "date" }
+                                            }
+                                        },
+                                        "prets": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": { "type": "integer" },
+                                                    "emprunteur": { "type": "string" },
+                                                    "date_debut": { "type": "string", "format": "date" },
+                                                    "date_retour": { "type": "string", "format": "date", "nullable": true },
+                                                    "statut": { "type": "string", "enum": ["en cours", "terminé"] }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": { "description": "Identifiant invalide (doit être un entier positif)" },
+                    "401": { "description": "Clé API manquante ou invalide" },
+                    "404": {
+                        "description": "Livre non trouvé",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": { "type": "string", "example": "Désolé, mais nous n'avons trouvé aucune information sur ce livre" }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": { "description": "Erreur serveur" }
+                }
+            },
+            "put": {
+                "summary": "Modifier les informations d'un livre",
+                "description": "Met à jour le titre, l'auteur, l'ISBN et la description d'un livre appartenant à la bibliothèque.",
+                "tags": ["Livres"],
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": { "type": "integer", "example": 1 }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["titre", "auteur", "isbn"],
+                                "properties": {
+                                    "titre": { "type": "string", "example": "Clean Code" },
+                                    "auteur": { "type": "string", "example": "Robert C. Martin" },
+                                    "isbn": { "type": "string", "example": "978-0132350884" },
+                                    "description": { "type": "string", "example": "Guide de bonnes pratiques en programmation" }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Livre modifié avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": { "type": "string", "example": "Livre modifié avec succès." },
+                                        "livre": {
+                                            "type": "object",
+                                            "properties": {
+                                                "titre": { "type": "string" },
+                                                "auteur": { "type": "string" },
+                                                "isbn": { "type": "string" },
+                                                "disponible": { "type": "boolean" },
+                                                "description": { "type": "string" },
+                                                "date_modification": { "type": "string", "format": "date" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": { "description": "Champs obligatoires manquants" },
+                    "401": { "description": "Clé API manquante ou invalide" },
+                    "500": { "description": "Erreur serveur (ex. ISBN déjà utilisé)" }
+                }
+            },
+            "patch": {
+                "summary": "Modifier le statut d'un livre",
+                "description": "Change uniquement le statut du livre : disponible (true) ou emprunté (false).",
+                "tags": ["Livres"],
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": { "type": "integer", "example": 1 }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["disponible"],
+                                "properties": {
+                                    "disponible": {
+                                        "type": "boolean",
+                                        "example": true,
+                                        "description": "true = disponible, false = emprunté"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Statut modifié avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": { "type": "string", "example": "Livre modifié avec succès." },
+                                        "livre": {
+                                            "type": "object",
+                                            "properties": {
+                                                "titre": { "type": "string" },
+                                                "isbn": { "type": "string" },
+                                                "disponible": { "type": "boolean" },
+                                                "date_modification": { "type": "string", "format": "date" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": { "description": "Identifiant invalide" },
+                    "401": { "description": "Clé API manquante ou invalide" },
+                    "500": { "description": "Erreur serveur" }
+                }
+            },
+            "delete": {
+                "summary": "Supprimer un livre",
+                "description": "Supprime définitivement un livre appartenant à la bibliothèque.",
+                "tags": ["Livres"],
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": { "type": "integer", "example": 1 }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Livre supprimé avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": { "type": "string", "example": "Livre supprimé avec succès." },
+                                        "livre": {
+                                            "type": "object",
+                                            "properties": {
+                                                "titre": { "type": "string" },
+                                                "isbn": { "type": "string" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": { "description": "Identifiant invalide" },
+                    "401": { "description": "Clé API manquante ou invalide" },
+                    "500": { "description": "Erreur serveur" }
+                }
+            }
+        },
+        "/api/bibliotheque/livres": {
+            "post": {
+                "summary": "Ajouter un livre",
+                "description": "Ajoute un nouveau livre dans la bibliothèque authentifiée.",
+                "tags": ["Livres"],
+                "security": [{ "ApiKeyAuth": [] }],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["titre", "auteur", "isbn"],
+                                "properties": {
+                                    "titre": { "type": "string", "example": "Clean Code" },
+                                    "auteur": { "type": "string", "example": "Robert C. Martin" },
+                                    "isbn": { "type": "string", "example": "978-0132350884" },
+                                    "disponible": {
+                                        "type": "boolean",
+                                        "default": false,
+                                        "description": "true = disponible, false = emprunté"
+                                    },
+                                    "description": { "type": "string", "example": "Guide de bonnes pratiques en programmation" }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Livre ajouté avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": { "type": "string", "example": "Livre ajouté avec succès." },
+                                        "identifiant": { "type": "integer", "example": 6 }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": { "description": "Champs titre, auteur ou isbn manquants" },
+                    "401": { "description": "Clé API manquante ou invalide" },
+                    "500": { "description": "Erreur serveur (ex. ISBN déjà existant)" }
+                }
+            }
+        },
+        "/api/bibliotheque/prets": {
+            "post": {
+                "summary": "Ajouter un prêt",
+                "description": "Crée un nouveau prêt pour un livre disponible de la bibliothèque et marque le livre comme emprunté. La bibliothèque ne peut emprunter que ses propres livres.",
+                "tags": ["Prêts"],
+                "security": [{ "ApiKeyAuth": [] }],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["livreId", "emprunteur", "dateRetourPrevu"],
+                                "properties": {
+                                    "livreId": { "type": "integer", "example": 1 },
+                                    "emprunteur": { "type": "string", "example": "Jean Dupont" },
+                                    "dateRetourPrevu": { "type": "string", "format": "date", "example": "2026-06-01" }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Prêt ajouté avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": { "type": "string", "example": "Prêt ajouté avec succès." },
+                                        "pret": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": { "type": "integer" },
+                                                "livre_id": { "type": "integer" },
+                                                "emprunteur": { "type": "string" },
+                                                "date_debut": { "type": "string", "format": "date" },
+                                                "date_retour_prevue": { "type": "string", "format": "date" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": { "description": "Champs manquants, livre indisponible ou livre n'appartenant pas à cette bibliothèque" },
+                    "401": { "description": "Clé API manquante ou invalide" },
+                    "500": { "description": "Erreur serveur" }
+                }
+            }
+        },
+        "/api/bibliotheque/prets/{id}": {
+            "put": {
+                "summary": "Modifier les informations d'un prêt",
+                "description": "Met à jour l'emprunteur et la date de retour prévue d'un prêt appartenant à la bibliothèque.",
+                "tags": ["Prêts"],
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": { "type": "integer", "example": 1 }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["emprunteur", "dateRetourPrevue"],
+                                "properties": {
+                                    "emprunteur": { "type": "string", "example": "Marie Tremblay" },
+                                    "dateRetourPrevue": { "type": "string", "format": "date", "example": "2026-07-01" }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Prêt modifié avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": { "type": "string", "example": "Prêt modifié avec succès." },
+                                        "pret": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": { "type": "integer" },
+                                                "livre_id": { "type": "integer" },
+                                                "emprunteur": { "type": "string" },
+                                                "date_debut": { "type": "string", "format": "date" },
+                                                "date_retour_prevue": { "type": "string", "format": "date" },
+                                                "statut": { "type": "boolean" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": { "description": "Identifiant invalide ou champs manquants" },
+                    "401": { "description": "Clé API manquante ou invalide" },
+                    "500": { "description": "Erreur serveur (ex. prêt introuvable ou n'appartient pas à cette bibliothèque)" }
+                }
+            },
+            "patch": {
+                "summary": "Modifier le statut d'un prêt",
+                "description": "Termine ou réactive un prêt. Si `terminer` est '1', la date de retour est enregistrée et le livre redevient disponible.",
+                "tags": ["Prêts"],
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": { "type": "integer", "example": 1 }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["terminer"],
+                                "properties": {
+                                    "terminer": {
+                                        "type": "boolean",
+                                        "example": "1",
+                                        "description": "1 = prêt terminé (livre retourné), autre que 1 = prêt réactivé"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Statut du prêt modifié avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": { "type": "string", "example": "Statut du prêt modifié avec succès." },
+                                        "pret": {
+                                            "type": "object",
+                                            "properties": {
+                                                "livre_id": { "type": "integer" },
+                                                "emprunteur": { "type": "string" },
+                                                "date_debut": { "type": "string", "format": "date" },
+                                                "date_retour_prevue": { "type": "string", "format": "date" },
+                                                "date_retour": { "type": "string", "format": "date", "nullable": true }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": { "description": "Identifiant invalide" },
+                    "401": { "description": "Clé API manquante ou invalide" },
+                    "500": { "description": "Erreur serveur (ex. prêt introuvable ou n'appartient pas à cette bibliothèque)" }
+                }
+            },
+            "delete": {
+                "summary": "Supprimer un prêt",
+                "description": "Supprime définitivement un prêt. Opération limitée aux prêts de la bibliothèque authentifiée.",
+                "tags": ["Prêts"],
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": { "type": "integer", "example": 1 }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Prêt supprimé avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": { "type": "string", "example": "Prêt supprimé avec succès." },
+                                        "pret": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": { "type": "integer" },
+                                                "livre_id": { "type": "integer" },
+                                                "emprunteur": { "type": "string" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": { "description": "Identifiant invalide" },
+                    "401": { "description": "Clé API manquante ou invalide" },
+                    "500": { "description": "Erreur serveur (ex. prêt introuvable ou n'appartient pas à cette bibliothèque)" }
+                }
+            }
+        }
+    }
+}
