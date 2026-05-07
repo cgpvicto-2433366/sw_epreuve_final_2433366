@@ -10,6 +10,10 @@
         {
             "url": "http://localhost:3000",
             "description": "Serveur de développement"
+        },
+        {
+            "url": "https://sw-epreuve-final-2433366.onrender.com",
+            "description": "Serveur de production"
         }
     ],
     "components": {
