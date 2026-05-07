@@ -27,3 +27,14 @@
 [2026-05-07T14:51:58.698Z] QUI: Non authentifié | QUOI: GET /api/bibliotheque/tests/test-500 | CIBLE: Indéfinis | ERREUR: Accès refusé ou données invalides
 [2026-05-07T14:57:51.663Z] QUI: Non authentifié | QUOI: GET /api/bibliotheque/tests/test-500 | CIBLE: Indéfinis | ERREUR: Accès refusé ou données invalides
 [2026-05-07T14:58:51.540Z] QUI: Bibliothèque de Victoriaville | QUOI: PUT /api/bibliotheque/prets/4 | CIBLE: Indéfinis | ERREUR: Erreur lors de la modification d'un prêt.
+[2026-05-07T16:01:19.658Z] QUI: Bibliothèque de Victoriaville | QUOI: PATCH /api/bibliotheque/livres/1 | CIBLE: Indéfinis | ERREUR: Erreur lors de la modification du statut du livre
+[2026-05-07T17:36:32.450Z] QUI: Bibliothèque de Victoriaville | QUOI: PATCH /api/bibliotheque/livres/1666 | CIBLE: Indéfinis | ERREUR: Erreur lors de la modification du statut du livre
+[2026-05-07T17:38:23.884Z] QUI: Bibliothèque de Victoriaville | QUOI: PATCH /api/bibliotheque/prets/3 | CIBLE: Indéfinis | ERREUR: Erreur lors de la modification du statut d'un prêt.
+[2026-05-07T17:39:19.076Z] QUI: Bibliothèque de Victoriaville | QUOI: PATCH /api/bibliotheque/prets/2 | CIBLE: Indéfinis | ERREUR: Erreur lors de la modification du statut d'un prêt.
+[2026-05-07T17:39:27.815Z] QUI: Bibliothèque de Victoriaville | QUOI: PATCH /api/bibliotheque/prets/2 | CIBLE: Indéfinis | ERREUR: Erreur lors de la modification du statut d'un prêt.
+[2026-05-07T17:39:45.219Z] QUI: Bibliothèque de Victoriaville | QUOI: PATCH /api/bibliotheque/prets/2 | CIBLE: Indéfinis | ERREUR: Erreur lors de la modification du statut d'un prêt.
+[2026-05-07T17:45:51.844Z] QUI: Bibliothèque de Victoriaville | QUOI: PATCH /api/bibliotheque/prets/2 | CIBLE: Indéfinis | ERREUR: Erreur lors de la modification du statut d'un prêt.
+[2026-05-07T17:48:29.985Z] QUI: Bibliothèque de Victoriaville | QUOI: PATCH /api/bibliotheque/prets/2 | CIBLE: Indéfinis | ERREUR: Erreur lors de la modification du statut d'un prêt.
+[2026-05-07T20:17:24.293Z] QUI: Bibliothèque de Victoriaville | QUOI: PATCH /api/bibliotheque/prets/2 | CIBLE: Indéfinis | ERREUR: Erreur lors de la modification du statut d'un prêt.
+[2026-05-07T20:18:59.311Z] QUI: Bibliothèque de Victoriaville | QUOI: PATCH /api/bibliotheque/prets/3 | CIBLE: Indéfinis | ERREUR: Erreur lors de la modification du statut d'un prêt.
+[2026-05-07T20:19:30.889Z] QUI: Bibliothèque de Victoriaville | QUOI: PATCH /api/bibliotheque/prets/5999 | CIBLE: Indéfinis | ERREUR: Erreur lors de la modification du statut d'un prêt.

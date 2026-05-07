@@ -118,7 +118,7 @@ export const _modifierStatutPret = async (req, res, next) => {
         if (!id || isNaN(Number(id)) || Number(id) <= 0) {
             return res.status(400).json({
                 message: "L'identifiant du prêt est obligatoire et doit être supérieur à 0."
-            });
+            })
         }
 
         const resultat = await modifierStatutPret(id, bibliothequeId, terminer);
