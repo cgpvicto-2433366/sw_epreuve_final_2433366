@@ -652,7 +652,7 @@
             },
             "patch": {
                 "summary": "Modifier le statut d'un prêt",
-                "description": "Termine ou réactive un prêt. Si `terminer` est '1', la date de retour est enregistrée et le livre redevient disponible.",
+                "description": "Termine ou réactive un prêt. Si `terminer` est true, la date de retour est enregistrée et le livre redevient disponible.",
                 "tags": ["Prêts"],
                 "security": [{ "ApiKeyAuth": [] }],
                 "parameters": [
