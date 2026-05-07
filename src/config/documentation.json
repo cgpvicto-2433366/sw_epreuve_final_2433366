@@ -635,7 +635,7 @@
             },
             "patch": {
                 "summary": "Modifier le statut d'un prêt",
-                "description": "Termine ou réactive un prêt. Si `terminer` est true, la date de retour est enregistrée et le livre redevient disponible. Opération limitée aux prêts de la bibliothèque authentifiée.",
+                "description": "Termine ou réactive un prêt. Si `terminer` est '1', la date de retour est enregistrée et le livre redevient disponible.",
                 "tags": ["Prêts"],
                 "security": [{ "ApiKeyAuth": [] }],
                 "parameters": [
@@ -656,8 +656,8 @@
                                 "properties": {
                                     "terminer": {
                                         "type": "boolean",
-                                        "example": true,
-                                        "description": "true = prêt terminé (livre retourné), false = prêt réactivé"
+                                        "example": "1",
+                                        "description": "1 = prêt terminé (livre retourné), autre que 1 = prêt réactivé"
                                     }
                                 }
                             }

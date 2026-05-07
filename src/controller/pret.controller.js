@@ -19,9 +19,20 @@ export const _ajouterUnPret = async (req, res, next) => {
             });
         }
 
+        if (!livreId || isNaN(Number(livreId)) || Number(livreId) <= 0) {
+            return res.status(400).json({
+                message: "L'identifiant du livre est obligatoire et doit être supérieur à 0."
+            });
+        }
+
         // Vérifie que le livre existe et appartient à cette bibliothèque
         const livre = await verifierDisponibiliteLivre(livreId, bibliothequeId);
-        if (!livre || !livre.disponible) {
+
+        if (!livre) {
+            return res.status(404).json({
+                erreur: 'Le livre n\'existe pas dans votre bibliotheque.'
+            });
+        }else if(!livre.disponible){
             return res.status(400).json({
                 erreur: 'Le livre n\'est pas disponible pour le prêt.'
             });
@@ -72,6 +83,12 @@ export const _modifierUnPret = async (req, res, next) => {
 
         const resultat = await modifierPret(id, bibliothequeId, emprunteur, dateRetourPrevue);
 
+        if(!resultat){
+            res.status(400).json({
+                message: 'Aucun prêt ne correspond à ces informations.'
+            })
+        }
+
         return res.status(200).json({
             message: 'Prêt modifié avec succès.',
             pret: resultat
@@ -106,6 +123,12 @@ export const _modifierStatutPret = async (req, res, next) => {
 
         const resultat = await modifierStatutPret(id, bibliothequeId, terminer);
 
+        if(!resultat){
+            res.status(400).json({
+                message: 'Aucun prêt ne correspond à ces informations.'
+            })
+        }
+
         await modifierStatut(resultat.livre_id, bibliothequeId, terminer);
 
         return res.status(200).json({
@@ -139,6 +162,11 @@ export const _supprimerUnPret = async (req, res, next) => {
         }
 
         const resultat = await supprimerPret(id, bibliothequeId);
+        if(!resultat){
+            res.status(400).json({
+                message: 'Aucun prêt ne correspond à ces informations.'
+            })
+        }
 
         // Remettre le livre disponible après suppression du prêt
         await modifierStatut(resultat.livre_id, bibliothequeId, true);

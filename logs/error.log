@@ -1,0 +1,27 @@
+[2026-05-07T00:50:34.702Z] QUI: Non authentifié | QUOI: GET /api/bibliotheque/test-500 | CIBLE: N/A | ERREUR: Accès refusé ou données invalides
+[2026-05-07T03:04:18.844Z] QUI: Non authentifié | QUOI: POST /api/bibliotheque/utilisateurs/inscription | CIBLE: N/A | ERREUR: Erreur lors de l'ajout d'un utilisateur
+[2026-05-07T03:16:27.193Z] QUI: Non authentifié | QUOI: POST /api/bibliotheque/utilisateurs/inscription | CIBLE: Indéfinis | ERREUR: Un compte existe déjà avec cet email.
+[2026-05-07T03:33:41.000Z] QUI: Non authentifié | QUOI: POST /api/bibliotheque/utilisateurs/inscription | CIBLE: Indéfinis | ERREUR: Un compte existe déjà avec cet email.
+[2026-05-07T04:07:05.831Z] QUI: Bibliothèque de Victoriaville | QUOI: POST /api/bibliotheque/livres | CIBLE: ISBN 978-0132350889 | ERREUR: Un livre existe déjà dans votre bibliothèque avec cet isbn
+[2026-05-07T04:16:39.955Z] QUI: Bibliothèque de Victoriaville | QUOI: PUT /api/bibliotheque/livres/6789 | CIBLE: ISBN 978-0132350884 | ERREUR: Erreur lors de la modification d'un livre
+[2026-05-07T04:24:10.014Z] QUI: Bibliothèque de Victoriaville | QUOI: PUT /api/bibliotheque/livres/1 | CIBLE: ISBN 978-0262033848 | ERREUR: Un livre existe déjà dans votre bibliothèque avec cet isbn
+[2026-05-07T04:29:11.832Z] QUI: Bibliothèque de Victoriaville | QUOI: PATCH /api/bibliotheque/livres/1666 | CIBLE: Indéfinis | ERREUR: Erreur lors de la modification du statut du livre
+[2026-05-07T04:32:36.716Z] QUI: Bibliothèque de Victoriaville | QUOI: DELETE /api/bibliotheque/livres/1 | CIBLE: Indéfinis | ERREUR: Erreur lors de la suppression du livre
+[2026-05-07T04:51:20.201Z] QUI: Bibliothèque de Victoriaville | QUOI: POST /api/bibliotheque/livres | CIBLE: ISBN 978-0132350877 | ERREUR: Un livre existe déjà dans votre bibliothèque avec cet isbn
+[2026-05-07T13:31:54.246Z] QUI: Bibliothèque de Victoriaville | QUOI: POST /api/bibliotheque/prets | CIBLE: Indéfinis | ERREUR: Erreur lors de l'ajout d'un prêt.
+[2026-05-07T13:37:09.084Z] QUI: Bibliothèque de Victoriaville | QUOI: POST /api/bibliotheque/prets | CIBLE: Indéfinis | ERREUR: Erreur lors de l'ajout d'un prêt.
+[2026-05-07T13:40:12.014Z] QUI: Bibliothèque de Victoriaville | QUOI: POST /api/bibliotheque/prets | CIBLE: Indéfinis | ERREUR: Erreur lors de l'ajout d'un prêt.
+[2026-05-07T13:50:26.293Z] QUI: Bibliothèque de Victoriaville | QUOI: POST /api/bibliotheque/prets | CIBLE: Indéfinis | ERREUR: Erreur lors de l'ajout d'un prêt.
+[2026-05-07T14:01:56.645Z] QUI: Bibliothèque de Victoriaville | QUOI: PATCH /api/bibliotheque/prets/5999 | CIBLE: Indéfinis | ERREUR: Erreur lors de la modification du statut d'un prêt.
+[2026-05-07T14:06:46.544Z] QUI: Bibliothèque de Victoriaville | QUOI: PATCH /api/bibliotheque/prets/5999 | CIBLE: Indéfinis | ERREUR: Erreur lors de la modification du statut d'un prêt.
+[2026-05-07T14:27:13.736Z] QUI: Bibliothèque de Victoriaville | QUOI: DELETE /api/bibliotheque/livres/900 | CIBLE: Indéfinis | ERREUR: Erreur lors de la suppression du livre
+[2026-05-07T14:29:24.036Z] QUI: Bibliothèque de Victoriaville | QUOI: PUT /api/bibliotheque/livres/6789 | CIBLE: ISBN 978-0132350884 | ERREUR: Erreur lors de la modification d'un livre
+[2026-05-07T14:29:30.829Z] QUI: Bibliothèque de Victoriaville | QUOI: PATCH /api/bibliotheque/livres/1666 | CIBLE: Indéfinis | ERREUR: Erreur lors de la modification du statut du livre
+[2026-05-07T14:30:12.613Z] QUI: Bibliothèque de Victoriaville | QUOI: PATCH /api/bibliotheque/prets/5999 | CIBLE: Indéfinis | ERREUR: Erreur lors de la modification du statut d'un prêt.
+[2026-05-07T14:33:22.908Z] QUI: Bibliothèque de Victoriaville | QUOI: DELETE /api/bibliotheque/prets/40000 | CIBLE: Indéfinis | ERREUR: Erreur lors de la suppression d'un prêt.
+[2026-05-07T14:34:26.049Z] QUI: Bibliothèque de Victoriaville | QUOI: DELETE /api/bibliotheque/prets/40000 | CIBLE: Indéfinis | ERREUR: Erreur lors de la suppression d'un prêt.
+[2026-05-07T14:38:35.692Z] QUI: Bibliothèque de Victoriaville | QUOI: DELETE /api/bibliotheque/prets/4 | CIBLE: Indéfinis | ERREUR: Erreur lors de la suppression d'un prêt.
+[2026-05-07T14:42:19.296Z] QUI: Bibliothèque de Victoriaville | QUOI: PUT /api/bibliotheque/prets/90 | CIBLE: Indéfinis | ERREUR: Erreur lors de la modification d'un prêt.
+[2026-05-07T14:43:29.202Z] QUI: Bibliothèque de Victoriaville | QUOI: PUT /api/bibliotheque/prets/90 | CIBLE: Indéfinis | ERREUR: Erreur lors de la modification d'un prêt.
+[2026-05-07T14:45:56.210Z] QUI: Bibliothèque de Victoriaville | QUOI: PUT /api/bibliotheque/prets/2 | CIBLE: Indéfinis | ERREUR: Erreur lors de la modification d'un prêt.
+[2026-05-07T14:51:58.698Z] QUI: Non authentifié | QUOI: GET /api/bibliotheque/tests/test-500 | CIBLE: Indéfinis | ERREUR: Accès refusé ou données invalides

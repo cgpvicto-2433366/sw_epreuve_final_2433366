@@ -47,9 +47,6 @@ export const modifierPret = async (id, bibliothequeId, emprunteur, dateRetourPre
 
     try {
         const resultat = await pool.query(sqlQuery, params);
-        if (resultat.rows.length === 0) {
-            throw new Error('Aucun prêt ne correspond à ces informations.');
-        }
         return resultat.rows[0];
     } catch (erreur) {
         console.error(`Erreur BD : ${erreur.message}`);
@@ -80,9 +77,6 @@ export const modifierStatutPret = async (id, bibliothequeId, terminer) => {
 
     try {
         const resultat = await pool.query(sqlQuery, params);
-        if (resultat.rows.length === 0) {
-            throw new Error('Aucun prêt ne correspond à ces informations.');
-        }
         return resultat.rows[0];
     } catch (erreur) {
         console.error(`Erreur BD : ${erreur.message}`);
@@ -107,9 +101,6 @@ export const supprimerPret = async (id, bibliothequeId) => {
 
     try {
         const resultat = await pool.query(sqlQuery, params);
-        if (resultat.rows.length === 0) {
-            throw new Error('Aucun prêt ne correspond à ces informations.');
-        }
         return resultat.rows[0];
     } catch (erreur) {
         console.error(`Erreur BD : ${erreur.message}`);

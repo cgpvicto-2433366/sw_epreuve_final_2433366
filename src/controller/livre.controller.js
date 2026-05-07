@@ -14,13 +14,13 @@ export const _recupererTousLesLivresBibliotheque = async (req, res, next) => {
         // L'ID de la bibliothèque vient de l'authentification par clé API
         const bibliothequeId = req.bibliotheque.id
 
-        const disponible = req.query.disponible === '1'
+        const afficherTous = req.query.tous === '1'
 
-        const livres = await recupererTousLesLivresBibliotheque(bibliothequeId, disponible)
+        const livres = await recupererTousLesLivresBibliotheque(bibliothequeId, afficherTous)
 
         return res.status(200).json({
             bibliotheque: req.bibliotheque.nom,
-            disponible,
+            afficherTous,
             total: livres.length,
             livres
         })
@@ -83,7 +83,7 @@ export const _ajouterUnLivre = async(req, res, next) =>{
 
     try {
         const { titre, auteur, isbn, description } = req.body
-        const disponible =  req.body.disponible === '1'
+        const disponible =  req.body.disponible != '0'
         const bibliothequeId = req.bibliotheque.id
 
         if (!titre || !auteur || !isbn ) {
@@ -139,6 +139,12 @@ export const _modifierUnLivre = async(req, res, next) =>{
 
         const resultat = await modifierLivre(id, bibliothequeId, titre, auteur, isbn, description)
 
+        if(!resultat){
+            res.status(400).json({
+                message: 'Aucun livre ne correspond a ces informations dans votre bibliotheque.'
+            })
+        }
+
         return res.status(200).json({
             message: 'Livre modifié avec succès.',
             livre: resultat
@@ -178,6 +184,12 @@ export const _modifierStatut = async(req, res, next) => {
 
         const resultat = await modifierStatut(id, bibliothequeId, disponible)
 
+        if(!resultat){
+            res.status(400).json({
+                message: 'Aucun livre ne correspond a ces informations dans votre bibliotheque.'
+            })
+        }
+
         return res.status(200).json({
             message: 'Livre modifié avec succès.',
             livre: resultat
@@ -208,6 +220,12 @@ export const _supprimerUnLivre = async(req, res, next) =>{
         }
 
         const resultat = await supprimerLivre(id, bibliothequeId)
+
+        if(!resultat){
+            res.status(400).json({
+                message: 'Aucun livre ne correspond a ces informations dans votre bibliotheque.'
+            })
+        }
 
         return res.status(200).json({
             message: 'Livre supprimé avec succès.',

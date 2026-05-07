@@ -5,16 +5,16 @@ import pool from '../config/db.js'
  * par défaut la liste ne contient que les livres disponibles
  * mais on peut aussi afficher tous les livres
  * @param {*} bibliothequeId identifiant de la bibliothèque dans la BD
- * @param {*} disponible booléen pour choisir le filtre
+ * @param {*} afficherTous booléen pour choisir le filtre
  *                          si true : afficher tous les livres
  *                          sinon : afficher uniquement les livres disponibles
  */
-export const recupererTousLesLivresBibliotheque =  async(bibliothequeId, disponible) =>{
+export const recupererTousLesLivresBibliotheque =  async(bibliothequeId, afficherTous) =>{
 
     let sqlQuery;
     const params = [bibliothequeId];
 
-    if (disponible) {
+    if (afficherTous) {
         sqlQuery = `SELECT titre, auteur, isbn FROM livres WHERE bibliotheque_id = $1 ORDER BY titre `;
     } else {
         sqlQuery = `SELECT titre, auteur, isbn FROM livres WHERE bibliotheque_id = $1 AND disponible = true ORDER BY titre `;
@@ -47,7 +47,7 @@ export const recupererDetailDeLivre =  async(livreId, bibliothequeId) =>{
     const paramsLivre = [livreId, bibliothequeId]
 
     const sqlPrets = `
-        SELECT id, emprunteur, date_debut, date_retour,
+        SELECT id, emprunteur, date_debut, date_retour_prevue, date_retour,
             CASE WHEN statut IS false THEN 'en cours' ELSE 'terminé' END AS statut
         FROM prets
         WHERE livre_id = $1
@@ -118,9 +118,6 @@ export const modifierLivre = async(id, bibliothequeId, titre, auteur, isbn, desc
 
     try{
         const resultat = await pool.query(updateQuery, updateValues)
-        if(resultat.rows.length === 0){
-            throw new Error('Aucun livre ne correspond a ces informations dans votre bibliotheque.');
-        }
         return resultat.rows[0]
     }catch (erreur){
         console.error(`Erreur BD : ${erreur.message}`);
@@ -148,9 +145,6 @@ export const modifierStatut = async(id, bibliothequeId, disponible) =>{
 
     try{
         const resultat = await pool.query(updateQuery, updateValues)
-        if(resultat.rows.length === 0){
-            throw new Error('Aucun livre ne correspond a ces informations dans votre bibliotheque.');
-        }
         return resultat.rows[0]
     }catch (erreur){
         console.error(`Erreur BD : ${erreur.message}`);
@@ -173,9 +167,6 @@ export const supprimerLivre = async(id, bibliothequeId) =>{
 
     try{
         const resultat = await pool.query(deleteQuery, deleteValues)
-        if(resultat.rows.length === 0){
-            throw new Error('Aucun livre ne correspond a ces informations dans votre bibliotheque.');
-        }
         return resultat.rows[0]
     }catch (erreur){
         console.error(`Erreur BD : ${erreur.message}`);

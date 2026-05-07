@@ -37,7 +37,7 @@ app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOp
 app.use('/api/bibliotheque/utilisateurs', routerUtilisateur);
 
 // Routes test
-app.use('/api/bibliotheque', routerTest);
+app.use('/api/bibliotheque/tests', routerTest);
 
 // rroutes protégées
 app.use('/api/bibliotheque/livres', Authentification, routerLivre);
@@ -53,7 +53,7 @@ app.use((err, req, res, next) => {
         const timestamp = new Date().toISOString();
         const qui = req.bibliotheque?.nom || 'Non authentifié';
         const quoi = `${req.method} ${req.originalUrl}`;
-        const cible = req.params?.id ? `ID ${req.params.id}` : (req.body?.isbn ? `ISBN ${req.body.isbn}` : 'N/A');
+        const cible = req.params?.id ? `ID ${req.params.id}` : (req.body?.isbn ? `ISBN ${req.body.isbn}` : 'Indéfinis');
 
         const entree = `[${timestamp}] QUI: ${qui} | QUOI: ${quoi} | CIBLE: ${cible} | ERREUR: ${message}\n`;
         console.error(entree);
