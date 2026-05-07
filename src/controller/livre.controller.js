@@ -83,7 +83,7 @@ export const _ajouterUnLivre = async(req, res, next) =>{
 
     try {
         const { titre, auteur, isbn, description } = req.body
-        const disponible =  req.body.disponible != '0'
+        const disponible = req.body.disponible !== false
         const bibliothequeId = req.bibliotheque.id
 
         if (!titre || !auteur || !isbn ) {
@@ -172,7 +172,7 @@ export const _modifierUnLivre = async(req, res, next) =>{
 export const _modifierStatut = async(req, res, next) => {
 
     try{
-        const disponible = req.body.disponible === '1'
+        const disponible = req.body.disponible === true
         const bibliothequeId = req.bibliotheque.id
         const id = req.params.id
         if(!id || isNaN(Number(id)) || Number(id) <= 0){

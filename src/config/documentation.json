@@ -3,7 +3,7 @@
     "info": {
         "title": "API Bibliothèque",
         "summary": "Service web de gestion de prêts pour bibliothèques",
-        "description": "Permet la gestion des livres et des prêts pour chaque bibliothèque..",
+        "description": "Permet la gestion des livres et des prêts pour chaque bibliothèque.\n\n**Convention booléenne :** Tous les champs booléens (`disponible`, `terminer`) utilisent les valeurs JSON natives `true` et `false`.",
         "version": "1.0.0"
     },
     "servers": [
@@ -196,7 +196,7 @@
                 "parameters": [
                     {
                         "in": "query",
-                        "name": "disponible",
+                        "name": "tous",
                         "description": "Passer `1` pour afficher tous les livres (disponibles et empruntés)",
                         "required": false,
                         "schema": { "type": "string", "enum": ["1"] }
@@ -211,7 +211,7 @@
                                     "type": "object",
                                     "properties": {
                                         "bibliotheque": { "type": "string", "example": "Bibliothèque de Victoriaville" },
-                                        "disponible": { "type": "boolean" },
+                                        "afficherTous": { "type": "boolean" },
                                         "total": { "type": "integer", "example": 3 },
                                         "livres": {
                                             "type": "array",
@@ -496,7 +496,7 @@
                                     "isbn": { "type": "string", "example": "978-0132350884" },
                                     "disponible": {
                                         "type": "boolean",
-                                        "default": false,
+                                        "default": true,
                                         "description": "true = disponible, false = emprunté"
                                     },
                                     "description": { "type": "string", "example": "Guide de bonnes pratiques en programmation" }
@@ -572,8 +572,21 @@
                             }
                         }
                     },
-                    "400": { "description": "Champs manquants, livre indisponible ou livre n'appartenant pas à cette bibliothèque" },
+                    "400": { "description": "Champs manquants ou livre indisponible" },
                     "401": { "description": "Clé API manquante ou invalide" },
+                    "404": {
+                        "description": "Livre introuvable dans cette bibliothèque",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": { "type": "string", "example": "Le livre n'existe pas dans votre bibliotheque." }
+                                    }
+                                }
+                            }
+                        }
+                    },
                     "500": { "description": "Erreur serveur" }
                 }
             }
@@ -660,8 +673,8 @@
                                 "properties": {
                                     "terminer": {
                                         "type": "boolean",
-                                        "example": "1",
-                                        "description": "1 = prêt terminé (livre retourné), autre que 1 = prêt réactivé"
+                                        "example": true,
+                                        "description": "true = prêt terminé (livre retourné), false = prêt réactivé"
                                     }
                                 }
                             }

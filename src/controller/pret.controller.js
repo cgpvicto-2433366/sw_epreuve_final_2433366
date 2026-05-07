@@ -112,7 +112,7 @@ export const _modifierUnPret = async (req, res, next) => {
 export const _modifierStatutPret = async (req, res, next) => {
     try {
         const id = req.params.id;
-        const terminer = req.body.terminer === '1';
+        const terminer = req.body.terminer === true;
         const bibliothequeId = req.bibliotheque.id
 
         if (!id || isNaN(Number(id)) || Number(id) <= 0) {
