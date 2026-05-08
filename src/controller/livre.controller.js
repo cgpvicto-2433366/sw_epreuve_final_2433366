@@ -14,7 +14,7 @@ export const _recupererTousLesLivresBibliotheque = async (req, res, next) => {
         // L'ID de la bibliothèque vient de l'authentification par clé API
         const bibliothequeId = req.bibliotheque.id
 
-        const afficherTous = req.query.tous === '1'
+        const afficherTous = req.query.tous === true
 
         const livres = await recupererTousLesLivresBibliotheque(bibliothequeId, afficherTous)
 
