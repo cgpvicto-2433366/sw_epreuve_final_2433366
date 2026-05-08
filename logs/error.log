@@ -45,3 +45,5 @@
 [2026-05-08T18:06:10.783Z] QUI: Bibliothèque de Victoriaville | QUOI: DELETE /api/bibliotheque/livres/1 | CIBLE: Indéfinis | ERREUR: Erreur lors de la suppression du livre
 [2026-05-08T18:08:26.320Z] QUI: Bibliothèque de Victoriaville | QUOI: DELETE /api/bibliotheque/livres/900 | CIBLE: Indéfinis | ERREUR: Erreur lors de la suppression du livre
 [2026-05-08T18:23:07.549Z] QUI: Non authentifié | QUOI: POST /api/bibliotheque/utilisateurs/inscription | CIBLE: Indéfinis | ERREUR: Un compte existe déjà avec cet email.
+[2026-05-08T22:06:10.124Z] QUI: Bibliothèque de Victoriaville | QUOI: GET /api/bibliotheque/livres/liste?tous=1 | CIBLE: Indéfinis | ERREUR: Erreur lors de la récupération de tous les livres
+[2026-05-08T22:06:15.550Z] QUI: Bibliothèque de Victoriaville | QUOI: GET /api/bibliotheque/livres/liste?tous=1 | CIBLE: Indéfinis | ERREUR: Erreur lors de la récupération de tous les livres
