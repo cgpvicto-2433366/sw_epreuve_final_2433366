@@ -36,13 +36,12 @@ export const _ajouterUtilisateur = async (req, res, next) => {
         })
     } catch (erreur) {
         console.error('Erreur lors de l\'ajout d\'un utilisateur :', erreur.message)
-        let error = new Error()
         if(erreur.code === VALEUR_NON_UNIQUE){
-           error = Error("Un compte existe déjà avec cet email.")
-        }else{
-            error = new Error('Erreur lors de l\'ajout d\'un utilisateur')
-        } 
-        next(error)
+            return res.status(409).json({
+                message: 'Un compte existe déjà avec cet email.'
+            })
+        }
+        next(new Error('Erreur lors de l\'ajout d\'un utilisateur'))
     }
 }
 

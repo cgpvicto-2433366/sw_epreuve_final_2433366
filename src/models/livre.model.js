@@ -175,9 +175,29 @@ export const supprimerLivre = async(id, bibliothequeId) =>{
 }
 
 /**
+ * Vérifier si un livre a un prêt en cours (statut = false)
+ * @param {*} livreId
+ * @returns {boolean}
+ */
+export const verifierPretEnCours = async (livreId) => {
+    const sqlQuery = `
+        SELECT id FROM prets
+        WHERE livre_id = $1 AND statut = false
+        LIMIT 1
+    `;
+    try {
+        const resultat = await pool.query(sqlQuery, [livreId]);
+        return resultat.rows.length > 0;
+    } catch (erreur) {
+        console.error(`Erreur BD : ${erreur.message}`);
+        throw erreur;
+    }
+};
+
+/**
  * Vérifier si un livre est disponible
  * @param {*} livreId
- * @returns 
+ * @returns
  */
 export const verifierDisponibiliteLivre = async (livreId, bibliothequeId) => {
     const sqlQuery = `

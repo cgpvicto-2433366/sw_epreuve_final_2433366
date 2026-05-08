@@ -1,4 +1,4 @@
-import { recupererTousLesLivresBibliotheque, recupererDetailDeLivre, ajouterUnLivre, modifierLivre, modifierStatut, supprimerLivre } from '../models/livre.model.js'
+import { recupererTousLesLivresBibliotheque, recupererDetailDeLivre, ajouterUnLivre, modifierLivre, modifierStatut, supprimerLivre, verifierPretEnCours } from '../models/livre.model.js'
 
 //https://www.postgresql.org/docs/current/errcodes-appendix.html
 const VALEUR_NON_UNIQUE = '23505';
@@ -88,7 +88,7 @@ export const _ajouterUnLivre = async(req, res, next) =>{
 
         if (!titre || !auteur || !isbn ) {
             return res.status(400).json({
-                erreur: 'Les champs titre, auteur et isbn sont obligatoires.'
+                message: 'Les champs titre, auteur et isbn sont obligatoires.'
             })
         }
 
@@ -101,13 +101,12 @@ export const _ajouterUnLivre = async(req, res, next) =>{
 
     } catch (erreur) {
         console.error('Erreur lors de l\'ajout d\'un livre :', erreur.message)
-        let error = new Error()
         if(erreur.code === VALEUR_NON_UNIQUE){
-            error = Error("Un livre existe déjà dans votre bibliothèque avec cet isbn")
-        }else{
-            error = new Error('Erreur lors de l\'ajout d\'un livre')
-        } 
-        next(error)
+            return res.status(409).json({
+                message: 'Un livre existe déjà dans votre bibliothèque avec cet isbn.'
+            })
+        }
+        next(new Error('Erreur lors de l\'ajout d\'un livre'))
     }
 }
 
@@ -133,14 +132,14 @@ export const _modifierUnLivre = async(req, res, next) =>{
 
         if (!titre || !auteur || !isbn ) {
             return res.status(400).json({
-                erreur: 'Les champs titre, auteur et isbn sont obligatoires.'
+                message: 'Les champs titre, auteur et isbn sont obligatoires.'
             })
         }
 
         const resultat = await modifierLivre(id, bibliothequeId, titre, auteur, isbn, description)
 
         if(!resultat){
-            res.status(400).json({
+            return res.status(404).json({
                 message: 'Aucun livre ne correspond a ces informations dans votre bibliotheque.'
             })
         }
@@ -152,13 +151,12 @@ export const _modifierUnLivre = async(req, res, next) =>{
 
     } catch (erreur) {
         console.error('Erreur lors de la modification d\'un livre :', erreur.message)
-        let error = new Error()
         if(erreur.code === VALEUR_NON_UNIQUE){
-            error = Error("Un livre existe déjà dans votre bibliothèque avec cet isbn")
-        }else{
-            error = new Error('Erreur lors de la modification d\'un livre')
-        } 
-        next(error)
+            return res.status(409).json({
+                message: 'Un livre existe déjà dans votre bibliothèque avec cet isbn.'
+            })
+        }
+        next(new Error('Erreur lors de la modification d\'un livre'))
     }
 }
 
@@ -182,10 +180,19 @@ export const _modifierStatut = async(req, res, next) => {
             return;
         }
 
+        if (disponible) {
+            const pretEnCours = await verifierPretEnCours(id);
+            if (pretEnCours) {
+                return res.status(409).json({
+                    message: 'Impossible de rendre le livre disponible : un prêt est en cours.'
+                });
+            }
+        }
+
         const resultat = await modifierStatut(id, bibliothequeId, disponible)
 
         if(!resultat){
-            res.status(400).json({
+            return res.status(404).json({
                 message: 'Aucun livre ne correspond a ces informations dans votre bibliotheque.'
             })
         }
@@ -219,10 +226,17 @@ export const _supprimerUnLivre = async(req, res, next) =>{
             return;
         }
 
+        const pretEnCours = await verifierPretEnCours(id);
+        if (pretEnCours) {
+            return res.status(409).json({
+                message: 'Impossible de supprimer le livre : un prêt est en cours.'
+            });
+        }
+
         const resultat = await supprimerLivre(id, bibliothequeId)
 
         if(!resultat){
-            res.status(400).json({
+            return res.status(404).json({
                 message: 'Aucun livre ne correspond a ces informations dans votre bibliotheque.'
             })
         }

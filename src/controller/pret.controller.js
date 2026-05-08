@@ -15,7 +15,7 @@ export const _ajouterUnPret = async (req, res, next) => {
 
         if (!livreId || !emprunteur || !dateRetourPrevu) {
             return res.status(400).json({
-                erreur: 'Les champs identifiant du livre, emprunteur et date de retour prévu sont obligatoires.'
+                message: 'Les champs identifiant du livre, emprunteur et date de retour prévu sont obligatoires.'
             });
         }
 
@@ -30,11 +30,11 @@ export const _ajouterUnPret = async (req, res, next) => {
 
         if (!livre) {
             return res.status(404).json({
-                erreur: 'Le livre n\'existe pas dans votre bibliotheque.'
+                message: 'Le livre n\'existe pas dans votre bibliotheque.'
             });
-        }else if(!livre.disponible){
-            return res.status(400).json({
-                erreur: 'Le livre n\'est pas disponible pour le prêt.'
+        } else if (!livre.disponible) {
+            return res.status(409).json({
+                message: 'Le livre n\'est pas disponible pour le prêt.'
             });
         }
 
@@ -77,14 +77,14 @@ export const _modifierUnPret = async (req, res, next) => {
 
         if (!emprunteur || !dateRetourPrevue) {
             return res.status(400).json({
-                erreur: "Les champs emprunteur et date de retour prévu sont obligatoires."
+                message: "Les champs emprunteur et date de retour prévu sont obligatoires."
             });
         }
 
         const resultat = await modifierPret(id, bibliothequeId, emprunteur, dateRetourPrevue);
 
         if(!resultat){
-            res.status(400).json({
+            return res.status(404).json({
                 message: 'Aucun prêt ne correspond à ces informations.'
             })
         }
@@ -124,7 +124,7 @@ export const _modifierStatutPret = async (req, res, next) => {
         const resultat = await modifierStatutPret(id, bibliothequeId, terminer);
 
         if(!resultat){
-            res.status(400).json({
+            return res.status(404).json({
                 message: 'Aucun prêt ne correspond à ces informations.'
             })
         }
@@ -163,13 +163,15 @@ export const _supprimerUnPret = async (req, res, next) => {
 
         const resultat = await supprimerPret(id, bibliothequeId);
         if(!resultat){
-            res.status(400).json({
+            return res.status(404).json({
                 message: 'Aucun prêt ne correspond à ces informations.'
             })
         }
 
-        // Remettre le livre disponible après suppression du prêt
-        await modifierStatut(resultat.livre_id, bibliothequeId, true);
+        // Remettre le livre disponible uniquement si le prêt était encore en cours
+        if (resultat.statut === false) {
+            await modifierStatut(resultat.livre_id, bibliothequeId, true);
+        }
 
         return res.status(200).json({
             message: 'Prêt supprimé avec succès.',

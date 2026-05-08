@@ -95,7 +95,7 @@ export const supprimerPret = async (id, bibliothequeId) => {
         DELETE FROM prets
         WHERE id = $1
         AND livre_id IN (SELECT id FROM livres WHERE bibliotheque_id = $2)
-        RETURNING id, livre_id, emprunteur
+        RETURNING id, livre_id, emprunteur, statut
     `;
     const params = [id, bibliothequeId];
 
