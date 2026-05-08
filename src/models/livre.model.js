@@ -15,9 +15,9 @@ export const recupererTousLesLivresBibliotheque =  async(bibliothequeId, affiche
     const params = [bibliothequeId];
 
     if (afficherTous) {
-        sqlQuery = `SELECT titre, auteur, isbn, disponible FROM livres WHERE bibliotheque_id = $1 ORDER BY titre `;
+        sqlQuery = `SELECT titre, auteur, isbn, descirption, disponible FROM livres WHERE bibliotheque_id = $1 ORDER BY titre `;
     } else {
-        sqlQuery = `SELECT titre, auteur, isbn, disponible FROM livres WHERE bibliotheque_id = $1 AND disponible = true ORDER BY titre `;
+        sqlQuery = `SELECT titre, auteur, isbn, description, disponible FROM livres WHERE bibliotheque_id = $1 AND disponible = true ORDER BY titre `;
     }
     
     try{
